@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<div x-data="{ open:false }" class="space-y-6">
+
+  <!-- Header + Create button -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Properties</h1>
+      <p class="text-sm text-slate-500">Manage the buildings you own</p>
+    </div>
+    <button @click="open=true"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition">
+      + Create Property
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 text-slate-600 uppercase text-xs">
+        <tr>
+          <th class="text-left px-4 py-3">Name</th>
+          <th class="text-left px-4 py-3">Location</th>
+          <th class="text-center px-4 py-3">Units</th>
+          <th class="text-center px-4 py-3">Occupied</th>
+          <th class="text-center px-4 py-3">Vacant</th>
+          <th class="text-right px-4 py-3">Expected Rent</th>
+          <th class="px-4 py-3"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in properties %}
+        <tr class="border-t hover:bg-slate-50">
+          <td class="px-4 py-3 font-medium text-slate-800">{{ p.name }}</td>
+          <td class="px-4 py-3 text-slate-600">{{ p.location or '—' }}</td>
+          <td class="px-4 py-3 text-center">{{ p.units|length }}</td>
+          <td class="px-4 py-3 text-center">
+            {{ p.units|selectattr('status','equalto','Occupied')|list|length }}
+          </td>
+          <td class="px-4 py-3 text-center">
+            {{ p.units|selectattr('status','equalto','Vacant')|list|length }}
+          </td>
+          <td class="px-4 py-3 text-right font-medium">
+            KSh {{ "{:,.0f}".format(
+              p.units|selectattr('status','equalto','Occupied')
+                     |map(attribute='monthly_rent')|sum
+            ) }}
+          </td>
+          <td class="px-4 py-3 text-right space-x-2">
+            <a href="{{ url_for('main.units') }}"
+               class="text-indigo-600 hover:underline text-xs">View Units</a>
+            <form method="POST" action="{{ url_for('main.delete_property', pid=p.id) }}"
+                  class="inline" onsubmit="return confirm('Delete {{ p.name }} and all its units?')">
+              <button class="text-red-500 hover:underline text-xs">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center py-12 text-slate-400">
+            <div class="text-4xl mb-2">🏢</div>
+            <p class="font-medium">No properties yet</p>
+            <p class="text-xs mt-1">Click "+ Create Property" to add your first one.</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Create Property Modal -->
+  <div x-show="open" x-cloak
+       class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div @click.outside="open=false"
+         class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
+      <h2 class="text-xl font-bold mb-4 text-slate-800">Create Property</h2>
+      <form method="POST" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium text-slate-700">Property Name</label>
+          <input name="name" required placeholder="e.g. Sunrise Apartments"
+                 class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+        <div>
+          <label class="text-sm font-medium text-slate-700">Location</label>
+          <input name="location" placeholder="e.g. Westlands, Nairobi"
+                 class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" @click="open=false"
+                  class="flex-1 bg-slate-200 hover:bg-slate-300 py-2.5 rounded-lg font-medium">
+            Cancel
+          </button>
+          <button class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium">
+            Save Property
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>[x-cloak]{display:none!important}</style>
+{% endblock %}

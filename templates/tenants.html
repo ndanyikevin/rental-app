@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block content %}
+<div x-data="{ open:false }" class="space-y-6">
+
+  <!-- Header + Create button -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Tenants</h1>
+      <p class="text-sm text-slate-500">People renting your units</p>
+    </div>
+    <button @click="open=true"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition">
+      + Add Tenant
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 text-slate-600 uppercase text-xs">
+        <tr>
+          <th class="text-left px-4 py-3">Name</th>
+          <th class="text-left px-4 py-3">Phone</th>
+          <th class="text-left px-4 py-3">Email</th>
+          <th class="text-left px-4 py-3">Property</th>
+          <th class="text-left px-4 py-3">Unit</th>
+          <th class="text-right px-4 py-3">Rent</th>
+          <th class="text-left px-4 py-3">Lease End</th>
+          <th class="px-4 py-3"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tenants %}
+        <tr class="border-t hover:bg-slate-50">
+          <td class="px-4 py-3 font-medium text-slate-800">{{ t.name }}</td>
+          <td class="px-4 py-3 text-slate-600">{{ t.phone or '—' }}</td>
+          <td class="px-4 py-3 text-slate-600">{{ t.email or '—' }}</td>
+          <td class="px-4 py-3">{{ t.unit.property.name if t.unit and t.unit.property else '—' }}</td>
+          <td class="px-4 py-3 font-medium">{{ t.unit.unit_number if t.unit else '—' }}</td>
+          <td class="px-4 py-3 text-right">
+            KSh {{ "{:,.0f}".format(t.unit.monthly_rent) if t.unit else '0' }}
+          </td>
+          <td class="px-4 py-3 text-slate-600">
+            {{ t.lease_end.strftime('%d %b %Y') if t.lease_end else '—' }}
+          </td>
+          <td class="px-4 py-3 text-right">
+            <form method="POST" action="{{ url_for('main.delete_tenant', tid=t.id) }}"
+                  class="inline" onsubmit="return confirm('Remove {{ t.name }}?')">
+              <button class="text-red-500 hover:underline text-xs">Remove</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="8" class="text-center py-12 text-slate-400">
+            <div class="text-4xl mb-2">👤</div>
+            <p class="font-medium">No tenants yet</p>
+            <p class="text-xs mt-1">Click "+ Add Tenant" to assign someone to a vacant unit.</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Create Tenant Modal -->
+  <div x-show="open" x-cloak
+       class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div @click.outside="open=false"
+         class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+      <h2 class="text-xl font-bold mb-4 text-slate-800">Add Tenant</h2>
+
+      {% if not vacant_units %}
+      <div class="bg-amber-50 border border-amber-200 text-amber-800 text-sm px-4 py-3 rounded-lg mb-4">
+        No vacant units available. <a href="{{ url_for('main.units') }}"
+        class="underline font-medium">Create a unit first</a> or mark one as Vacant.
+      </div>
+      {% endif %}
+
+      <form method="POST" class="space-y-4">
+        <div>
+          <label class="text-sm font-medium text-slate-700">Assign to Unit</label>
+          <select name="unit_id" required
+                  class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                  {% if not vacant_units %}disabled{% endif %}>
+            <option value="">— Select a vacant unit —</option>
+            {% for u in vacant_units %}
+            <option value="{{ u.id }}">
+              {{ u.property.name }} — Unit {{ u.unit_number }}
+              (KSh {{ "{:,.0f}".format(u.monthly_rent) }})
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-medium text-slate-700">Full Name</label>
+          <input name="name" required placeholder="e.g. John Kamau"
+                 class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-medium text-slate-700">Phone</label>
+            <input name="phone" placeholder="0712 345 678"
+                   class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium text-slate-700">Email</label>
+            <input name="email" type="email" placeholder="optional"
+                   class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-medium text-slate-700">Deposit Paid</label>
+            <input name="deposit_paid" type="number" step="0.01" default="0"
+                   class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="text-sm font-medium text-slate-700">Lease End</label>
+            <input name="lease_end" type="date"
+                   class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" @click="open=false"
+                  class="flex-1 bg-slate-200 hover:bg-slate-300 py-2.5 rounded-lg font-medium">
+            Cancel
+          </button>
+          <button {% if not vacant_units %}disabled{% endif %}
+                  class="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-2.5 rounded-lg font-medium">
+            Save Tenant
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>[x-cloak]{display:none!important}</style>
+{% endblock %}

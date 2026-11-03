@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-2xl font-bold text-slate-800 mb-6">Dashboard</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+  {% set cards = [
+    ('Properties', total_props, '🏢', 'from-blue-500 to-blue-600'),
+    ('Total Units', total_units, '🚪', 'from-indigo-500 to-indigo-600'),
+    ('Occupied', occupied, '✅', 'from-green-500 to-green-600'),
+    ('Vacant', vacant, '🕳️', 'from-amber-500 to-amber-600'),
+  ] %}
+  {% for label,val,icon,grad in cards %}
+  <div class="bg-white rounded-xl shadow-sm p-5">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-slate-500">{{ label }}</p>
+        <p class="text-3xl font-bold text-slate-800 mt-1">{{ val }}</p>
+      </div>
+      <div class="w-12 h-12 rounded-lg bg-gradient-to-br {{ grad }} flex items-center justify-center text-2xl">
+        {{ icon }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+  <div class="bg-white rounded-xl shadow-sm p-5">
+    <p class="text-sm text-slate-500">Occupancy Rate</p>
+    <p class="text-3xl font-bold text-indigo-600">{{ occupancy }}%</p>
+    <div class="w-full bg-slate-200 h-2 rounded-full mt-3">
+      <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ occupancy }}%"></div>
+    </div>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm p-5">
+    <p class="text-sm text-slate-500">Expected Monthly Rent</p>
+    <p class="text-3xl font-bold text-slate-800">KSh {{ "{:,.0f}".format(expected) }}</p>
+  </div>
+  <div class="bg-white rounded-xl shadow-sm p-5">
+    <p class="text-sm text-slate-500">Collected This Month</p>
+    <p class="text-3xl font-bold text-green-600">KSh {{ "{:,.0f}".format(collected) }}</p>
+    <p class="text-xs text-red-500 mt-1">Outstanding: KSh {{ "{:,.0f}".format(outstanding) }}</p>
+  </div>
+</div>
+{% endblock %}
