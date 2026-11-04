@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Rental Management{% endblock %}</title>
+
+    <link
+        rel="preload"
+        href="{{ url_for('static', filename='fonts/InterVariable.woff2') }}"
+        as="font"
+        type="font/woff2"
+        crossorigin
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/app.css') }}"
+    >
+
+    {% block head %}{% endblock %}
+</head>
+
+<body class="min-h-screen bg-slate-50 font-sans text-slate-800">
+
+    {% block body %}{% endblock %}
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

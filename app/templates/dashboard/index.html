@@ -1,0 +1,326 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Rental Management{% endblock %}
+
+{% block body %}
+
+<div class="min-h-screen flex bg-slate-50">
+
+    <!-- Sidebar -->
+    <aside class="hidden lg:flex w-64 shrink-0 flex-col border-r border-slate-200 bg-[#faf9ff]">
+
+        <!-- Brand -->
+        <div class="flex h-20 items-center gap-3 border-b border-slate-200 px-6">
+
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-lg font-bold text-white">
+                R
+            </div>
+
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-slate-900">
+                    Rental<span class="text-brand-600">Hub</span>
+                </h1>
+
+                <p class="text-xs text-slate-500">
+                    Property Management
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 space-y-7 overflow-y-auto px-4 py-6">
+
+            <!-- Overview -->
+            <div>
+                <p class="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    Overview
+                </p>
+
+                <a href="/"
+                   class="flex items-center gap-3 rounded-lg border border-brand-100 bg-white px-3 py-2.5 text-sm font-semibold text-brand-700 shadow-sm">
+
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                    </svg>
+
+                    Dashboard
+                </a>
+            </div>
+
+            <!-- Management -->
+            <div>
+                <p class="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    Management
+                </p>
+
+                <div class="space-y-1">
+
+                    <a href="#"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                  d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>
+                        </svg>
+
+                        Properties
+                    </a>
+
+                    <a href="#"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path stroke-linecap="round" stroke-width="1.7" d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+                        </svg>
+
+                        Units
+                    </a>
+
+                    <a href="#"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                  d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m13-14a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm5 14v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+
+                        Tenants
+                    </a>
+
+                    <a href="#"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                  d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Z"/>
+                        </svg>
+
+                        Leases
+                    </a>
+                </div>
+            </div>
+
+            <!-- Finance -->
+            <div>
+                <p class="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    Finance
+                </p>
+
+                <div class="space-y-1">
+
+                    <a href="#"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="2.5" y="5" width="19" height="14" rx="2"/>
+                            <path stroke-linecap="round" stroke-width="1.7" d="M2.5 10h19m-14 5h4"/>
+                        </svg>
+
+                        Payments
+                    </a>
+
+                    <a href="#"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                  d="M12 3v18m7-14H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H5"/>
+                        </svg>
+
+                        Expenses
+                    </a>
+
+                    <a href="#"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                  d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/>
+                        </svg>
+
+                        Reports
+                    </a>
+                </div>
+            </div>
+
+        </nav>
+
+        <!-- Sidebar footer -->
+        <div class="border-t border-slate-200 p-4">
+
+            <div class="flex items-center gap-3 rounded-lg p-2">
+
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+                    A
+                </div>
+
+                <div class="min-w-0">
+                    <p class="truncate text-sm font-semibold text-slate-800">
+                        Administrator
+                    </p>
+
+                    <p class="text-xs text-slate-500">
+                        System account
+                    </p>
+                </div>
+
+            </div>
+
+            <p class="mt-3 px-2 text-[11px] text-slate-400">
+                RentalHub · Offline Edition
+            </p>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main content -->
+    <main class="min-w-0 flex-1">
+
+        <!-- Top bar -->
+        <header class="flex h-20 items-center justify-between border-b border-slate-200 bg-white px-5 sm:px-8">
+
+            <div>
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900">
+                    Dashboard
+                </h2>
+
+                <p class="mt-0.5 text-xs text-slate-500">
+                    Welcome to your property management workspace.
+                </p>
+            </div>
+
+            <div class="flex items-center gap-4">
+
+                <div class="hidden items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 sm:flex">
+                    <span class="text-xs text-slate-500">Currency</span>
+                    <span class="text-sm font-semibold text-slate-800">KES</span>
+                </div>
+
+                <button type="button"
+                        class="relative flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-brand-700"
+                        aria-label="Notifications">
+
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                              d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12a2 2 0 0 0 4 0"/>
+                    </svg>
+
+                    <span class="absolute right-2 top-2 h-2 w-2 rounded-full bg-brand-500 ring-2 ring-white"></span>
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- Page content -->
+        <section class="p-5 sm:p-8">
+
+            <!-- Welcome -->
+            <div class="rounded-2xl border border-brand-100 bg-gradient-to-r from-brand-50 to-white p-6 sm:p-8">
+
+                <p class="text-sm font-medium text-brand-700">
+                    Your workspace
+                </p>
+
+                <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                    Manage your properties with confidence.
+                </h1>
+
+                <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
+                    Monitor your properties, manage tenants, track rental
+                    payments and keep your business organised.
+                </p>
+
+            </div>
+
+
+            <!-- Statistics -->
+            <div class="mt-8">
+
+                <div class="mb-5 flex items-center justify-between">
+                    <h3 class="text-base font-semibold text-slate-900">
+                        Overview
+                    </h3>
+
+                    <span class="text-xs text-slate-400">
+                        Current summary
+                    </span>
+                </div>
+
+                <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+
+                    {% for title in ["Properties", "Occupied Units", "Active Tenants", "Monthly Collections"] %}
+
+                    <div class="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-sm">
+
+                        <p class="text-sm font-medium text-slate-500">
+                            {{ title }}
+                        </p>
+
+                        <p class="mt-4 text-2xl font-bold tracking-tight text-slate-900">
+                            —
+                        </p>
+
+                        <p class="mt-2 text-xs text-slate-400">
+                            Awaiting setup
+                        </p>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Getting started -->
+            <div class="mt-8 rounded-xl border border-slate-200 bg-white p-6">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                  d="M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+
+                    </div>
+
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-900">
+                            Getting started
+                        </h3>
+
+                        <p class="mt-1 text-xs text-slate-500">
+                            Your application foundation is ready.
+                        </p>
+                    </div>
+
+                </div>
+
+                <p class="mt-5 text-sm leading-6 text-slate-500">
+                    We will build the management modules step by step,
+                    beginning with the database architecture and staff accounts.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+{% endblock %}
