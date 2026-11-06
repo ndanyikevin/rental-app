@@ -16,6 +16,25 @@ NAVIGATION = [
         ],
     },
     {
+        "group": "Management",
+        "items": [
+            {
+                "label": "Properties",
+                "endpoint": "properties.index",
+                "module": "properties",
+                "action": "view",
+                "icon": "building-2",
+            },
+            {
+                "label": "Units",
+                "endpoint": "units.index",
+                "module": "units",
+                "action": "view",
+                "icon": "door-open",
+            },
+        ],
+    },
+    {
         "group": "Administration",
         "items": [
             {
@@ -43,28 +62,17 @@ NAVIGATION = [
 
 
 def get_navigation(user):
-    """
-    Return navigation items accessible to the current user.
-
-    Items without module permissions are available to every
-    authenticated user. Other items require the specified permission.
-    """
+    """Return navigation groups containing only accessible items."""
 
     visible_groups = []
 
     for group in NAVIGATION:
-        visible_items = []
-
-        for item in group["items"]:
-            module = item["module"]
-            action = item["action"]
-
-            if module is None:
-                visible_items.append(item)
-                continue
-
-            if has_permission(user, module, action):
-                visible_items.append(item)
+        visible_items = [
+            item
+            for item in group["items"]
+            if item["module"] is None
+            or has_permission(user, item["module"], item["action"])
+        ]
 
         if visible_items:
             visible_groups.append({

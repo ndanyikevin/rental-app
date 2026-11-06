@@ -1,408 +1,150 @@
 
-{% extends "base.html" %}
+{% extends "dashboard/layout.html" %}
 
 {% block title %}{{ dashboard.title }} | RentalHub{% endblock %}
 
-{% block body %}
+{% block header_title %}
+    {{ dashboard.title }}
+{% endblock %}
 
-<div class="min-h-screen bg-slate-50 lg:flex">
+{% block header_description %}
+    {{ dashboard.description }}
+{% endblock %}
 
-    <!-- Desktop sidebar -->
-    <aside class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col border-r border-slate-200 bg-[#faf9ff]">
+{% block content %}
 
-        <!-- Brand -->
-        <div class="flex h-20 shrink-0 items-center gap-3 border-b border-slate-200 px-6">
+    <!-- Welcome -->
+    <section class="rounded-2xl border border-brand-100 bg-gradient-to-r from-brand-50 to-white p-6 sm:p-8">
 
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-lg font-bold text-white">
-                R
-            </div>
+        <p class="text-sm font-medium text-brand-700">
+            {{ user.role.name }} workspace
+        </p>
 
-            <div>
-                <h1 class="text-lg font-bold tracking-tight text-slate-900">
-                    Rental<span class="text-brand-600">Hub</span>
-                </h1>
+        <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Welcome, {{ user.username }}.
+        </h1>
 
-                <p class="text-xs text-slate-500">
-                    Property Management
-                </p>
-            </div>
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
+            {{ dashboard.welcome }}
+            {{ dashboard.description }}
+        </p>
 
+    </section>
+
+    <!-- Overview -->
+    <section class="mt-8">
+
+        <div class="mb-5 flex items-center justify-between">
+            <h3 class="text-base font-semibold text-slate-900">
+                Workspace overview
+            </h3>
+
+            <span class="text-xs text-slate-400">
+                RentalHub
+            </span>
         </div>
 
-        <!-- Navigation -->
-        <nav class="flex-1 space-y-7 overflow-y-auto px-4 py-6">
+        <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
-            {% for group in navigation %}
+            {% if user.role.name == "Administrator" or user.role.name == "Manager" %}
 
-                <div>
+                {% set cards = [
+                    ("Properties", "Property portfolio"),
+                    ("Occupied Units", "Occupancy"),
+                    ("Active Tenants", "Tenant records"),
+                    ("Monthly Collections", "Rental income")
+                ] %}
 
-                    <p class="mb-3 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                        {{ group.group }}
+            {% elif user.role.name == "Accountant" %}
+
+                {% set cards = [
+                    ("Rent Collections", "Payments"),
+                    ("Outstanding Rent", "Arrears"),
+                    ("Expenses", "Business expenditure"),
+                    ("Financial Reports", "Financial performance")
+                ] %}
+
+            {% else %}
+
+                {% set cards = [
+                    ("Assigned Tasks", "Maintenance"),
+                    ("Pending Tasks", "Maintenance"),
+                    ("Properties", "Property information"),
+                    ("Units", "Unit information")
+                ] %}
+
+            {% endif %}
+
+            {% for title, description in cards %}
+
+                <div class="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-sm">
+
+                    <p class="text-sm font-medium text-slate-500">
+                        {{ title }}
                     </p>
 
-                    <div class="space-y-1">
+                    <p class="mt-4 text-2xl font-bold tracking-tight text-slate-900">
+                        —
+                    </p>
 
-                        {% for item in group["items"] %}
-
-                            {% set active = request.endpoint == item.endpoint %}
-
-                            <a
-                                href="{{ url_for(item.endpoint) }}"
-                                class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition
-                                {% if active %}
-                                    border border-brand-100 bg-white font-semibold text-brand-700 shadow-sm
-                                {% else %}
-                                    font-medium text-slate-600 hover:bg-brand-50 hover:text-brand-700
-                                {% endif %}"
-                                {% if active %}aria-current="page"{% endif %}
-                            >
-
-                                {% if item.icon == "dashboard" %}
-                                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-                                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-                                        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-                                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-                                    </svg>
-
-                                {% elif item.icon == "users" %}
-                                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
-                                              d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m13-14a4 4 0 1 1-8 0 4 4 0 0 1 8 0Zm5 14v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-                                    </svg>
-
-                                {% elif item.icon == "lock" %}
-                                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <rect x="4" y="10" width="16" height="11" rx="2"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
-                                              d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/>
-                                    </svg>
-                                {% endif %}
-
-                                {{ item.label }}
-
-                            </a>
-
-                        {% endfor %}
-
-                    </div>
+                    <p class="mt-2 text-xs text-slate-400">
+                        {{ description }} · Awaiting module setup
+                    </p>
 
                 </div>
 
             {% endfor %}
 
-        </nav>
+        </div>
 
-        <!-- User profile -->
-        <div class="shrink-0 border-t border-slate-200 p-4">
+    </section>
 
-            <div class="flex items-center gap-3 rounded-lg p-2">
+    <!-- Getting started -->
+    <section class="mt-8 rounded-xl border border-slate-200 bg-white p-6">
 
-                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
-                    {{ user.username[0]|upper }}
-                </div>
+        <div class="flex items-center gap-3">
 
-                <div class="min-w-0 flex-1">
-                    <p class="truncate text-sm font-semibold text-slate-800">
-                        {{ user.username }}
-                    </p>
-
-                    <p class="truncate text-xs text-slate-500">
-                        {{ user.role.name }}
-                    </p>
-                </div>
-
+            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                          d="M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
             </div>
 
-            <form method="POST" action="{{ url_for('auth.logout') }}" class="mt-3">
+            <div>
+                <h3 class="text-sm font-semibold text-slate-900">
+                    Your next steps
+                </h3>
 
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                <button
-                    type="submit"
-                    class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-red-50 hover:text-red-600"
-                >
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
-                              d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-4-4 4-4m0 0-4-4m4 4H3"/>
-                    </svg>
-
-                    Sign out
-                </button>
-
-            </form>
-
-            <p class="mt-3 px-2 text-[11px] text-slate-400">
-                RentalHub · Offline Edition
-            </p>
+                <p class="mt-1 text-xs text-slate-500">
+                    RentalHub is being configured for your property operations.
+                </p>
+            </div>
 
         </div>
 
-    </aside>
-
-
-    <!-- Main application area -->
-    <div class="min-w-0 flex-1 lg:ml-64">
-
-        <!-- Top bar -->
-        <header class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white px-5 sm:px-8">
-
-            <div class="flex min-w-0 items-center gap-3">
-
-                <!-- Mobile navigation -->
-                <details class="relative lg:hidden">
-
-                    <summary class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
-                                  d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </summary>
-
-                    <div class="absolute left-0 top-12 z-50 max-h-[75vh] w-72 overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 shadow-xl">
-
-                        <div class="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
-
-                            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 font-bold text-white">
-                                R
-                            </div>
-
-                            <div>
-                                <p class="font-bold text-slate-900">
-                                    Rental<span class="text-brand-600">Hub</span>
-                                </p>
-                                <p class="text-xs text-slate-500">
-                                    Property Management
-                                </p>
-                            </div>
-
-                        </div>
-
-                        {% for group in navigation %}
-
-                            <div class="mb-5">
-
-                                <p class="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                                    {{ group.group }}
-                                </p>
-
-                                <div class="space-y-1">
-
-                                    {% for item in group["items"] %}
-
-                                        <a
-                                            href="{{ url_for(item.endpoint) }}"
-                                            class="block rounded-lg px-3 py-2.5 text-sm font-medium
-                                            {% if request.endpoint == item.endpoint %}
-                                                bg-brand-50 text-brand-700
-                                            {% else %}
-                                                text-slate-600 hover:bg-slate-50
-                                            {% endif %}"
-                                        >
-                                            {{ item.label }}
-                                        </a>
-
-                                    {% endfor %}
-
-                                </div>
-
-                            </div>
-
-                        {% endfor %}
-
-                        <div class="border-t border-slate-100 pt-3">
-                            <form method="POST" action="{{ url_for('auth.logout') }}">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                                <button type="submit" class="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50">
-                                    Sign out
-                                </button>
-                            </form>
-                        </div>
-
-                    </div>
-
-                </details>
-
-                <div class="min-w-0">
-                    <h2 class="truncate text-lg font-semibold tracking-tight text-slate-900">
-                        {{ dashboard.title }}
-                    </h2>
-
-                    <p class="hidden text-xs text-slate-500 sm:block">
-                        {{ dashboard.description }}
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="flex shrink-0 items-center gap-3">
-
-                <div class="hidden items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 sm:flex">
-                    <span class="text-xs text-slate-500">Currency</span>
-                    <span class="text-sm font-semibold text-slate-800">KES</span>
-                </div>
-
-                <a
-                    href="{{ url_for('auth.change_password') }}"
-                    title="Change password"
-                    class="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 transition hover:bg-brand-50 hover:text-brand-700"
-                >
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <rect x="4" y="10" width="16" height="11" rx="2"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
-                              d="M8 10V7a4 4 0 0 1 8 0v3"/>
-                    </svg>
-                </a>
-
-            </div>
-
-        </header>
-
-
-        <!-- Page content -->
-        <main class="p-5 sm:p-8">
-
-            <!-- Welcome -->
-            <section class="rounded-2xl border border-brand-100 bg-gradient-to-r from-brand-50 to-white p-6 sm:p-8">
-
-                <p class="text-sm font-medium text-brand-700">
-                    {{ user.role.name }} workspace
-                </p>
-
-                <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                    Welcome, {{ user.username }}.
-                </h1>
-
-                <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-                    {{ dashboard.welcome }}
-                    {{ dashboard.description }}
-                </p>
-
-            </section>
-
-
-            <!-- Overview -->
-            <section class="mt-8">
-
-                <div class="mb-5 flex items-center justify-between">
-                    <h3 class="text-base font-semibold text-slate-900">
-                        Workspace overview
-                    </h3>
-
-                    <span class="text-xs text-slate-400">
-                        RentalHub
-                    </span>
-                </div>
-
-                <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-
-                    {% if user.role.name == "Administrator" or user.role.name == "Manager" %}
-
-                        {% set cards = [
-                            ("Properties", "Property portfolio"),
-                            ("Occupied Units", "Occupancy"),
-                            ("Active Tenants", "Tenant records"),
-                            ("Monthly Collections", "Rental income")
-                        ] %}
-
-                    {% elif user.role.name == "Accountant" %}
-
-                        {% set cards = [
-                            ("Rent Collections", "Payments"),
-                            ("Outstanding Rent", "Arrears"),
-                            ("Expenses", "Business expenditure"),
-                            ("Financial Reports", "Financial performance")
-                        ] %}
-
-                    {% else %}
-
-                        {% set cards = [
-                            ("Assigned Tasks", "Maintenance"),
-                            ("Pending Tasks", "Maintenance"),
-                            ("Properties", "Property information"),
-                            ("Units", "Unit information")
-                        ] %}
-
-                    {% endif %}
-
-                    {% for title, description in cards %}
-
-                        <div class="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-brand-200 hover:shadow-sm">
-
-                            <p class="text-sm font-medium text-slate-500">
-                                {{ title }}
-                            </p>
-
-                            <p class="mt-4 text-2xl font-bold tracking-tight text-slate-900">
-                                —
-                            </p>
-
-                            <p class="mt-2 text-xs text-slate-400">
-                                {{ description }} · Awaiting module setup
-                            </p>
-
-                        </div>
-
-                    {% endfor %}
-
-                </div>
-
-            </section>
-
-
-            <!-- Getting started -->
-            <section class="mt-8 rounded-xl border border-slate-200 bg-white p-6">
-
-                <div class="flex items-center gap-3">
-
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
-                                  d="M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                        </svg>
-                    </div>
-
-                    <div>
-                        <h3 class="text-sm font-semibold text-slate-900">
-                            Your next steps
-                        </h3>
-
-                        <p class="mt-1 text-xs text-slate-500">
-                            RentalHub is being configured for your property operations.
-                        </p>
-                    </div>
-
-                </div>
-
-                <p class="mt-5 text-sm leading-6 text-slate-500">
-                    Your account and access permissions are configured.
-                    The next development phase will introduce property
-                    registration, units, tenant records and lease management.
-                </p>
-
-                {% if user.role.name == "Administrator" %}
-
-                    <a
-                        href="{{ url_for('staff.index') }}"
-                        class="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700"
-                    >
-                        Manage staff
-
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M5 12h14m-7-7 7 7-7 7"/>
-                        </svg>
-                    </a>
-
-                {% endif %}
-
-            </section>
-
-        </main>
-
-    </div>
-
-</div>
+        <p class="mt-5 text-sm leading-6 text-slate-500">
+            Your account and access permissions are configured.
+            The next development phases will introduce property
+            registration, units, tenant records and lease management.
+        </p>
+
+        {% if user.role.name == "Administrator" %}
+
+            <a
+                href="{{ url_for('staff.index') }}"
+                class="mt-5 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700"
+            >
+                Manage staff
+
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M5 12h14m-7-7 7 7-7 7"/>
+                </svg>
+            </a>
+
+        {% endif %}
+
+    </section>
 
 {% endblock %}

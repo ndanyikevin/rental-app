@@ -1,0 +1,124 @@
+
+{% extends "dashboard/layout.html" %}
+
+{% block title %}{{ page_title }} | RentalHub{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-3xl space-y-6">
+
+    <div>
+        <a href="{{ url_for('properties.index') }}"
+           class="inline-flex items-center gap-2 text-sm font-medium text-brand-600 hover:text-brand-700">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m15 18-6-6 6-6"/>
+            </svg>
+            Back to properties
+        </a>
+
+        <h1 class="mt-4 text-2xl font-bold text-slate-900">
+            {{ page_title }}
+        </h1>
+
+        <p class="mt-1 text-sm text-slate-500">
+            Enter the property details below.
+        </p>
+    </div>
+
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="border-b border-slate-200 px-6 py-4">
+            <h2 class="font-semibold text-slate-900">
+                Property information
+            </h2>
+            <p class="mt-1 text-xs text-slate-500">
+                Fields marked with an asterisk are required.
+            </p>
+        </div>
+
+        <form method="POST" class="space-y-6 p-6">
+            {{ form.hidden_tag() }}
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <div class="sm:col-span-2">
+                    {{ form.name.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                    {{ form.name(
+                        class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100",
+                        placeholder="e.g. Green Valley Apartments"
+                    ) }}
+
+                    {% for error in form.name.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    {{ form.property_code.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                    {{ form.property_code(
+                        class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm uppercase outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100",
+                        placeholder="e.g. PROP-001"
+                    ) }}
+
+                    {% for error in form.property_code.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    {{ form.town.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                    {{ form.town(
+                        class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100",
+                        placeholder="e.g. Nakuru"
+                    ) }}
+
+                    {% for error in form.town.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="sm:col-span-2">
+                    {{ form.address.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                    {{ form.address(
+                        class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100",
+                        placeholder="Enter the physical address"
+                    ) }}
+
+                    {% for error in form.address.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="sm:col-span-2">
+                    {{ form.description.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                    {{ form.description(
+                        rows="4",
+                        class="w-full resize-y rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100",
+                        placeholder="Additional information about this property..."
+                    ) }}
+
+                    {% for error in form.description.errors %}
+                    <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+
+                <a href="{{ url_for('properties.index') }}"
+                   class="rounded-lg border border-slate-300 px-5 py-2.5 text-center text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    Cancel
+                </a>
+
+                {{ form.submit(
+                    class="cursor-pointer rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700"
+                ) }}
+
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
