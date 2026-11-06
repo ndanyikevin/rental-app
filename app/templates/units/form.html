@@ -1,0 +1,227 @@
+
+{% extends "dashboard/layout.html" %}
+
+{% block title %}{{ page_title }} | RentalHub{% endblock %}
+
+{% block header_title %}{{ page_title }}{% endblock %}
+
+{% block header_description %}
+    Register and manage rental units within your properties.
+{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-4xl space-y-6">
+
+    <div class="flex items-center justify-between">
+        <a href="{{ url_for('units.index') }}"
+           class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-purple-700">
+            <span aria-hidden="true">&larr;</span>
+            Back to units
+        </a>
+    </div>
+
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="border-b border-slate-200 px-6 py-5">
+            <h2 class="text-lg font-semibold text-slate-900">
+                {{ page_title }}
+            </h2>
+            <p class="mt-1 text-sm text-slate-500">
+                Enter the unit details below.
+            </p>
+        </div>
+
+        <form method="POST" class="space-y-6 p-6">
+            {{ form.hidden_tag() }}
+
+            {% if form.errors %}
+                <div class="rounded-lg border border-red-200 bg-red-50 p-4">
+                    <p class="text-sm font-semibold text-red-700">
+                        Please correct the following errors:
+                    </p>
+                    <ul class="mt-2 list-inside list-disc text-sm text-red-600">
+                        {% for field_name, errors in form.errors.items() %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <!-- Property and unit identification -->
+            <div>
+                <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Unit identification
+                </h3>
+
+                <div class="grid gap-5 md:grid-cols-2">
+
+                    <div>
+                        {{ form.property_id.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                        {{ form.property_id(class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100") }}
+                        {% for error in form.property_id.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div>
+                        {{ form.unit_number.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                        {{ form.unit_number(class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100", placeholder="e.g. A01, Shop 1") }}
+                        {% for error in form.unit_number.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    
+            <div>
+                {{ form.unit_type.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+
+                {{ form.unit_type(
+                    id="unit_type",
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
+                ) }}
+
+                {% for error in form.unit_type.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+                <div id="custom-unit-type-container" class="hidden">
+                    {{ form.custom_unit_type.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+
+                    {{ form.custom_unit_type(
+                        id="custom_unit_type",
+                        class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100",
+                        placeholder="Enter the unit type"
+                    ) }}
+
+                    {% for error in form.custom_unit_type.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                    {% endfor %}
+
+                    <p class="mt-1 text-xs text-slate-500">
+                        Enter the name of the unit type you want to register.
+                    </p>
+                </div>
+
+
+                    <div>
+                        {{ form.status.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                        {{ form.status(class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100") }}
+                        {% for error in form.status.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100"></div>
+
+            <!-- Unit specifications -->
+            <div>
+                <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Unit specifications
+                </h3>
+
+                <div class="grid gap-5 md:grid-cols-2">
+
+                    <div>
+                        {{ form.bedrooms.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                        {{ form.bedrooms(class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100", min="0") }}
+                        {% for error in form.bedrooms.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div>
+                        {{ form.bathrooms.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                        {{ form.bathrooms(class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100", min="0") }}
+                        <p class="mt-1 text-xs text-slate-500">
+                            Enter 0 if the unit has no private bathroom.
+                        </p>
+                        {% for error in form.bathrooms.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100"></div>
+
+            <!-- Rental information -->
+            <div>
+                <h3 class="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                    Rental information
+                </h3>
+
+                <div>
+                    {{ form.default_rent.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">
+                            KES
+                        </span>
+                        {{ form.default_rent(class="w-full rounded-lg border border-slate-300 py-2.5 pl-14 pr-3 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100", placeholder="0.00", min="0", step="0.01") }}
+                    </div>
+                    {% for error in form.default_rent.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                    {% endfor %}
+                    <p class="mt-1 text-xs text-slate-500">
+                        This is the default monthly rent for the unit.
+                    </p>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100"></div>
+
+            <!-- Description -->
+            <div>
+                {{ form.description.label(class="mb-2 block text-sm font-medium text-slate-700") }}
+                {{ form.description(class="min-h-28 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100", rows="4", placeholder="Additional information about this unit...") }}
+                {% for error in form.description.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+
+                <a href="{{ url_for('units.index') }}"
+                   class="rounded-lg border border-slate-300 px-5 py-2.5 text-center text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    Cancel
+                </a>
+
+                {{ form.submit(class="rounded-lg bg-purple-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2") }}
+
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const unitType = document.getElementById("unit_type");
+    const customContainer = document.getElementById("custom-unit-type-container");
+    const customInput = document.getElementById("custom_unit_type");
+
+    function toggleCustomType() {
+        const isOther = unitType.value === "Other";
+
+        customContainer.classList.toggle("hidden", !isOther);
+        customInput.required = isOther;
+
+        if (!isOther) {
+            customInput.value = "";
+        }
+    }
+
+    unitType.addEventListener("change", toggleCustomType);
+
+    toggleCustomType();
+});
+</script>
+
+{% endblock %}

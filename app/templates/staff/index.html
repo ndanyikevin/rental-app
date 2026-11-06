@@ -1,0 +1,124 @@
+
+{% extends "base.html" %}
+
+{% block title %}Staff Management | RentalHub{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-slate-50 p-6 sm:p-8">
+    <div class="mx-auto max-w-6xl">
+
+        <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <p class="text-sm font-medium text-brand-600">Administration</p>
+                <h1 class="mt-1 text-2xl font-bold text-slate-900">
+                    Staff Management
+                </h1>
+                <p class="mt-1 text-sm text-slate-500">
+                    Manage RentalHub user accounts and access.
+                </p>
+            </div>
+
+            <a href="{{ url_for('staff.create') }}"
+               class="rounded-lg bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-800">
+                + Add staff member
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="mb-4 rounded-lg border border-slate-200 bg-white p-4 text-sm">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
+                        <tr>
+                            <th class="px-5 py-4">Staff member</th>
+                            <th class="px-5 py-4">Role</th>
+                            <th class="px-5 py-4">Status</th>
+                            <th class="px-5 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-slate-100">
+                        {% for member in staff_members %}
+                            <tr>
+                                <td class="px-5 py-4">
+                                    <p class="font-semibold text-slate-800">
+                                        {{ member.username }}
+                                    </p>
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        {{ member.email }}
+                                    </p>
+                                </td>
+
+                                <td class="px-5 py-4 text-slate-600">
+                                    {{ member.role.name }}
+                                </td>
+
+                                <td class="px-5 py-4">
+                                    {% if member.is_active %}
+                                        <span class="rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="px-5 py-4">
+                                    <div class="flex flex-wrap justify-end gap-3">
+                                        <a href="{{ url_for('staff.edit', user_id=member.id) }}"
+                                           class="font-medium text-brand-700 hover:text-brand-900">
+                                            Edit
+                                        </a>
+
+                                        <a href="{{ url_for('staff.reset_password', user_id=member.id) }}"
+                                           class="font-medium text-slate-600 hover:text-slate-900">
+                                            Reset password
+                                        </a>
+
+                                        <form method="POST"
+                                              action="{{ url_for('staff.toggle_status', user_id=member.id) }}">
+                                            <input type="hidden"
+                                                   name="csrf_token"
+                                                   value="{{ csrf_token() }}">
+
+                                            <button type="submit"
+                                                    class="font-medium text-red-600 hover:text-red-800">
+                                                {% if member.is_active %}
+                                                    Deactivate
+                                                {% else %}
+                                                    Activate
+                                                {% endif %}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="4"
+                                    class="px-5 py-10 text-center text-slate-500">
+                                    No staff accounts found.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <a href="{{ url_for('dashboard.index') }}"
+           class="mt-6 inline-block text-sm font-medium text-slate-500 hover:text-brand-700">
+            ← Back to dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

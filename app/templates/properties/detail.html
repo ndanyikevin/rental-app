@@ -1,0 +1,209 @@
+
+{% extends "dashboard/layout.html" %}
+
+{% block title %}{{ property.name }} | RentalHub{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-5xl space-y-6">
+
+    <!-- Breadcrumb and actions -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+            <a href="{{ url_for('properties.index') }}"
+               class="text-sm font-medium text-brand-600 hover:text-brand-700">
+                &larr; Back to properties
+            </a>
+
+            <h1 class="mt-3 text-2xl font-bold text-slate-900">
+                {{ property.name }}
+            </h1>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Property code: {{ property.property_code }}
+            </p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+
+            {% if has_permission(current_user, "properties", "edit") %}
+            <a href="{{ url_for('properties.edit', property_id=property.id) }}"
+               class="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                Edit property
+            </a>
+
+            <form method="POST"
+                  action="{{ url_for('properties.toggle_status', property_id=property.id) }}"
+                  onsubmit="return confirm('Are you sure you want to change this property status?');">
+
+                {{ status_form.hidden_tag() }}
+
+                {% if property.is_active %}
+                <button type="submit"
+                        class="rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50">
+                    Deactivate
+                </button>
+                {% else %}
+                <button type="submit"
+                        class="rounded-lg border border-emerald-200 bg-white px-4 py-2.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50">
+                    Activate
+                </button>
+                {% endif %}
+            </form>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm text-slate-500">Total units</p>
+            <p class="mt-2 text-3xl font-bold text-slate-900">
+                {{ property.units|length }}
+            </p>
+            <p class="mt-1 text-xs text-slate-500">
+                Registered units
+            </p>
+        </div>
+
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm text-slate-500">Property status</p>
+
+            {% if property.is_active %}
+            <span class="mt-3 inline-flex rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700">
+                Active
+            </span>
+            {% else %}
+            <span class="mt-3 inline-flex rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-600">
+                Inactive
+            </span>
+            {% endif %}
+        </div>
+
+        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm text-slate-500">Town</p>
+            <p class="mt-2 text-xl font-bold text-slate-900">
+                {{ property.town or "Not specified" }}
+            </p>
+            <p class="mt-1 text-xs text-slate-500">
+                Property location
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Property information -->
+    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="border-b border-slate-200 px-6 py-4">
+            <h2 class="font-semibold text-slate-900">
+                Property information
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
+
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Property name
+                </p>
+                <p class="mt-2 text-sm font-medium text-slate-900">
+                    {{ property.name }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Property code
+                </p>
+                <p class="mt-2 text-sm font-medium text-slate-900">
+                    {{ property.property_code }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Town
+                </p>
+                <p class="mt-2 text-sm text-slate-900">
+                    {{ property.town or "Not specified" }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Physical address
+                </p>
+                <p class="mt-2 text-sm text-slate-900">
+                    {{ property.address or "Not specified" }}
+                </p>
+            </div>
+
+            <div class="sm:col-span-2">
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Description
+                </p>
+                <p class="mt-2 whitespace-pre-line text-sm leading-6 text-slate-700">
+                    {{ property.description or "No description provided." }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Date registered
+                </p>
+                <p class="mt-2 text-sm text-slate-900">
+                    {{ property.created_at.strftime("%d %b %Y") }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    Last updated
+                </p>
+                <p class="mt-2 text-sm text-slate-900">
+                    {{ property.updated_at.strftime("%d %b %Y") }}
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Units placeholder -->
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+
+        <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+            <div>
+                <h2 class="font-semibold text-slate-900">
+                    Property units
+                </h2>
+                <p class="mt-1 text-xs text-slate-500">
+                    Units registered under this property.
+                </p>
+            </div>
+        </div>
+
+        <div class="px-6 py-10 text-center">
+            {% if property.units %}
+                <p class="text-sm text-slate-600">
+                    {{ property.units|length }} unit(s) are registered under this property.
+                </p>
+                <p class="mt-1 text-xs text-slate-500">
+                    Detailed unit management will be available in the Units module.
+                </p>
+            {% else %}
+                <p class="text-sm font-medium text-slate-800">
+                    No units registered yet.
+                </p>
+                <p class="mt-1 text-xs text-slate-500">
+                    Units will be managed from the Units module.
+                </p>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

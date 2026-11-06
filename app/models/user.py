@@ -41,6 +41,14 @@ class User(UserMixin, TimestampMixin, db.Model):
         nullable=False
     )
 
+    # Increment to invalidate previously issued login sessions.
+    session_version = db.Column(
+        db.Integer,
+        nullable=False,
+        default=1,
+        server_default="1"
+    )
+
     last_login_at = db.Column(db.DateTime(timezone=True))
 
     role = db.relationship(
@@ -75,6 +83,9 @@ class User(UserMixin, TimestampMixin, db.Model):
         back_populates="assigned_to",
         foreign_keys="Maintenance.assigned_to_user_id"
     )
+
+    def get_id(self):
+        return f"{self.id}:{self.session_version}"
 
     def set_password(self, password):
         self.password_hash = bcrypt.generate_password_hash(
