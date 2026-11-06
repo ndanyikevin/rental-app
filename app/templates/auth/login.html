@@ -1,27 +1,134 @@
 {% extends "base.html" %}
 
-{% block title %}Sign In | Rental Management{% endblock %}
+{% block title %}Sign In | RentalHub{% endblock %}
 
 {% block body %}
-<div class="flex min-h-screen items-center justify-center bg-brand-50 px-4">
-    <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+<div class="flex min-h-screen items-center justify-center bg-brand-50 px-4 py-10">
+
+    <div class="w-full max-w-md">
+
+        <!-- Brand -->
         <div class="mb-8 text-center">
-            <h1 class="text-2xl font-bold text-brand-950">
-                Rental<span class="text-brand-600">Hub</span>
+            <div class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-100 text-brand-700">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path d="m3 10 9-7 9 7"/>
+                    <path d="M5 9v12h14V9"/>
+                    <path d="M9 21v-8h6v8"/>
+                </svg>
+            </div>
+
+            <h1 class="text-3xl font-bold tracking-tight text-brand-950">
+                Mama<span class="text-brand-600">Shiro</span>
             </h1>
+
             <p class="mt-2 text-sm text-slate-500">
-                Sign in to your workspace
+                Property management, made simpler.
             </p>
         </div>
 
-        <p class="rounded-lg bg-brand-50 p-4 text-sm text-brand-900">
-            Authentication will be implemented in the next development stage.
+        <!-- Login card -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+
+            <div class="mb-7">
+                <h2 class="text-xl font-semibold text-slate-900">
+                    Welcome back
+                </h2>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    Sign in to access your workspace.
+                </p>
+            </div>
+
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-6 space-y-3">
+                        {% for category, message in messages %}
+                            <div class="rounded-lg border px-4 py-3 text-sm
+                                {% if category == 'success' %}
+                                    border-green-200 bg-green-50 text-green-800
+                                {% elif category == 'danger' %}
+                                    border-red-200 bg-red-50 text-red-800
+                                {% else %}
+                                    border-brand-200 bg-brand-50 text-brand-800
+                                {% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}" class="space-y-5">
+
+                {{ form.hidden_tag() }}
+
+                <!-- Username / email -->
+                <div>
+                    {{ form.identifier.label(
+                        class="mb-2 block text-sm font-medium text-slate-700"
+                    ) }}
+
+                    {{ form.identifier(
+                        class="block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100",
+                        placeholder="Enter your username or email",
+                        autocomplete="username",
+                        autofocus=true
+                    ) }}
+
+                    {% for error in form.identifier.errors %}
+                        <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <div class="mb-2 flex items-center justify-between">
+                        {{ form.password.label(
+                            class="block text-sm font-medium text-slate-700"
+                        ) }}
+                    </div>
+
+                    {{ form.password(
+                        class="block w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100",
+                        placeholder="Enter your password",
+                        autocomplete="current-password"
+                    ) }}
+
+                    {% for error in form.password.errors %}
+                        <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="flex w-full items-center justify-center rounded-lg bg-brand-700 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-800 focus:outline-none focus:ring-4 focus:ring-brand-200"
+                >
+                    Sign in
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- Footer -->
+        <p class="mt-6 text-center text-xs text-slate-400">
+            RentalHub
+            <span class="mx-1">·</span>
+            Local property management system
         </p>
 
-        <a href="/"
-           class="mt-6 block rounded-lg bg-brand-800 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-brand-900">
-            Return to dashboard
-        </a>
     </div>
 </div>
 {% endblock %}
